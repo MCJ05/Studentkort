@@ -21,6 +21,20 @@ const errorList = document.querySelector("#errorlist");
 const historySection = document.querySelector("#history");
 const deleteHistoryButton = document.querySelector("#delete");
 
+form.addEventListener("submit", onSubmit)
+clearButton.addEventListener("click", ClearForm)
+
+function onSubmit(event) {
+    event.preventDefault();
+    
+
+    validateForm();
+
+    createStudentCard();
+    
+    clearForm();
+}
+
 
 // Array som används för felmeddelanden
 let errors = [];
@@ -34,6 +48,13 @@ let history = [];
  */
 function validateForm() {
     // Kontrollera formulärets obligatoriska fält
+    let name = fullnameInput.value;
+
+    if(name.lenth === 0) {
+        return false;
+    } else {
+        return true;
+    }
 
     // Visa eventuella felmeddelanden
 
@@ -49,14 +70,20 @@ function displayErrors() {
 
     // Skriv ut aktuella felmeddelanden till DOM
 }
-
-
+   
 /**
  * Skapar ett studentkort och visar det på sidan.
  */
 function createStudentCard() {
     // Hämta information från formuläret
+    let name = fullnameInput.value;
+    let email = emailInput.value;
+    let phone = phoneInput.value;
 
+    // Skriva ut till elementet
+    const output = document.querySelector("#preview");
+    output.innerHTML =`<strong>Namn:</strong> ${name} <br> <strong>E-postadress:</strong> ${email} <br> <strong>Telefon:</strong> ${phone}`;
+    
     // Uppdatera studentkortet
 
     // Lägg till studentkortet i historiken
@@ -98,6 +125,7 @@ function renderHistory() {
  */
 function clearForm() {
     // Återställ formulär och studentkort
+    
 
     // Rensa eventuella felmeddelanden
 }
@@ -121,7 +149,11 @@ function deleteHistory() {
 
 
 // När användaren klickar på "Rensa"
-
+function ClearForm() {
+    fullnameInput.value ="";
+    emailInput.value = "";
+    phoneInput.value = "";
+}
 
 // När användaren klickar på "Radera historik"
 
