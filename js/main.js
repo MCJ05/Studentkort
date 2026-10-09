@@ -38,12 +38,10 @@ function onSubmit(event) {
     displayErrors();
     createStudentCard();
     ClearForm();
-
-    
 }
 
-
 // Array som används för felmeddelanden
+let errors = [];
 let errorsList = [];
 
 // Array som innehåller sparade studentkort
@@ -59,32 +57,32 @@ function validateForm(name, email, phone) {
 
     // Visa eventuella felmeddelanden
     // Tömmer felmeddelanden som redan skrivits ut
-    errorsList = [];
-    errorsList.innerHTML = "";
+    errors = [];
+    errors.innerHTML = "";
 
     // Variabel som har koll på eventuella fel
     let validate = true;
 
     // Validera namn-input
     if(name === "") {
-        errorsList.push("Ange ditt namn");
+        errors.push("Ange ditt namn");
         validate = false;
     }
 
     // Validera email-input
     if(email.length === 0) {
-        errorsList.push("Ange din E-postadress")
+        errors.push("Ange din E-postadress")
         validate = false;
     }
 
     if(!email.includes("@")) {
-        errorsList.push("Ange en giltig E-postadress");
+        errors.push("Ange en giltig E-postadress");
         validate = false;
     }
 
     // Validera phone-input
     if(phone === "") {
-        errorsList.push("Ange ett telefonnummer");
+        errors.push("Ange ett telefonnummer");
         validate = false;
     }
     
@@ -138,6 +136,24 @@ function createStudentCard() {
  */
 function saveHistory() {
     // Spara history i localStorage
+    const saveHistory = {
+        name: name,
+        email: email,
+        phone: phone
+    }
+
+    const localStorageData = localStorage.getItem("SaveHistory");
+
+    const SaveHistory = JSON.parse(StorageData);
+    if(saveHistory === null) {
+        SaveHistory = [];
+    }
+    SaveHistory.push(saveHistory);
+
+    const SaveHistoryJson = JSON.stringify(SaveHistory);
+
+    localStorage.setItem("SaveHistory", SaveHistoryJson);
+
 }
 
 
@@ -146,6 +162,7 @@ function saveHistory() {
  */
 function loadHistory() {
     // Hämta eventuell sparad historik
+   
 
     // Uppdatera history
 }
