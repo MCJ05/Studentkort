@@ -27,17 +27,24 @@ clearButton.addEventListener("click", ClearForm)
 function onSubmit(event) {
     event.preventDefault();
     
-
-    validateForm();
-
-    createStudentCard();
+    const name = fullnameInput.value.trim();
+    const email = emailInput.value.trim();
+    const phone = phoneInput.value.trim();
     
-    clearForm();
+    if(!validateForm(name, email, phone)) {
+        writeErrors();
+    }
+
+    displayErrors();
+    createStudentCard();
+    ClearForm();
+
+    
 }
 
 
 // Array som används för felmeddelanden
-let errors = [];
+let errorsList = [];
 
 // Array som innehåller sparade studentkort
 let history = [];
@@ -45,30 +52,64 @@ let history = [];
 /**
  * Validerar formulärets inmatning.
  * @returns {boolean}
+ * 
  */
-function validateForm() {
+function validateForm(name, email, phone) {
     // Kontrollera formulärets obligatoriska fält
-    let name = fullnameInput.value;
-
-    if(name.lenth === 0) {
-        return false;
-    } else {
-        return true;
-    }
 
     // Visa eventuella felmeddelanden
+    // Tömmer felmeddelanden som redan skrivits ut
+    errorsList = [];
+    errorsList.innerHTML = "";
+
+    // Variabel som har koll på eventuella fel
+    let validate = true;
+
+    // Validera namn-input
+    if(name === "") {
+        errorsList.push("Ange ditt namn");
+        validate = false;
+    }
+
+    // Validera email-input
+    if(email.length === 0) {
+        errorsList.push("Ange din E-postadress")
+        validate = false;
+    }
+
+    if(!email.includes("@")) {
+        errorsList.push("Ange en giltig E-postadress");
+        validate = false;
+    }
+
+    // Validera phone-input
+    if(phone === "") {
+        errorsList.push("Ange ett telefonnummer");
+        validate = false;
+    }
+    
+    return validate;
 
     // Returnera resultatet (true eller false) av valideringen
 }
 
-
 /**
  * Visar felmeddelanden på sidan.
- */
+*/
 function displayErrors() {
     // Rensa tidigare felmeddelanden
 
     // Skriv ut aktuella felmeddelanden till DOM
+    if(errorsList.length > 0) {
+            console.log(errorsList);
+
+        for(let i = 0; i < errorsList.length; i++) {
+            const liEl = document.createElement("li");
+            liEl.innerHTML = errorsList[i];
+
+            errorsList.appendChild(liEl);
+        }
+    }
 }
    
 /**
