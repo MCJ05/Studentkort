@@ -25,14 +25,13 @@ const output = document.querySelector("#output");
 const user = document.querySelector("#user");
 const eventElement = document.querySelector("#event");
 const previewCard = document.querySelector("#previewCard");
-const errorlist = document.querySelector("#errorlist")
 
 clearButton.addEventListener("click", ClearForm);
 
 console.log(user);
 form.addEventListener ("submit", function(event) {
     event.preventDefault();
-    //
+
     const user = {
         fullname: fullnameInput.value.trim(),
         email: emailInput.value.trim(),
@@ -40,20 +39,22 @@ form.addEventListener ("submit", function(event) {
         font: fontSelect.value
     };
 
-    /*
-    console.log(fullname);
-    console.log(email);
-    console.log(phone);
-    console.log(font);
-    */
-
     if(!validateForm(user.fullname, user.email, user.phone)) {
         displayErrors();
         return;
+    } else {
+        saveHistory(fullname, email, phone, font);
     }
 
+    // Skapa studentkortet
     createStudentCard(user);
+    
+
+    //loadHistory();
+
+    // Rensa formulär
     ClearForm();
+    
 });
 
 
@@ -86,7 +87,7 @@ function validateForm(name, email, phone) {
     }
 
     // Validera email-input
-    if(emailInput.value.trim() === 0) {
+    if(emailInput.value.trim() === "") {
         errors.push("Ange din e-postadress");
         validate = false;
     }
@@ -137,80 +138,86 @@ function createStudentCard(user) {
     previewFullname.textContent = user.fullname;
     previewEmail.textContent =  user.email;
     previewPhone.textContent = user.phone;
-    
-    previewCard.style.fontFamily = font;
-
+        
+    output.computedStyleMap.fontFamily = font;
     // Skriva ut till elementet
     const output = document.querySelector("#preview");
     /*
     if(!output) {
-        console.error("Hittar inte ele,emter #preview i HTML");
+        console.error("Hittar inte element #preview i HTML");
         return;
     }
     */
-    output.innerHTML =`<strong>Namn:</strong> ${fullname} <br> <strong>E-postadress:</strong> ${email} <br> <strong>Telefon:</strong> ${phone}`;
+    output.innerHTML =`${fullname} <br> ${email} <br> ${phone}`;
     
     // Uppdatera studentkortet
 
     // Lägg till studentkortet i historiken
+    history.push( {
+        fullname: user.fullname,
+        email: user.email,
+        phone: user.phone,
+        font: user.font
+    });
 
     // Spara och uppdatera historiken
+    console.log(history);
 }
 
 
 /**
  * Sparar historiken i localStorage.
  */
-function saveHistory() {
-    // Spara history i localStorage
-    const History = {
-        name: fullname,
+function saveHistory(fullname, email, phone, font) {
+    // Spara historiken i localStorage
+    const history = {
+        fullname: fullname,
         email: email,
         phone: phone,
         font: font
     };
 
-    conaole.log(History);
+    const History = [];
+    History.push(history);
+    
+    //console.log(history);
 
-    const localStorageData = localStorage.getItem("Historys");
+    const localStorageData = localStorage.getItem("History");
     console.log(localStorageData);
 
-    const Historys = JSON.parse(StorageData);
-    if(History === null) {
-        Historys = [];
-    }
-    Historys.push(History);
-
-    const HistorysJson = JSON.stringify(History);
-
-    localStorage.setItem("Historys", HistorysJson);
-
+    const usersJson = JSON.stringify(History);
+    console.log(usersJson);
 }
-
 
 /**
  * Läser in tidigare historik från localStorage.
  */
 function loadHistory() {
     // Hämta eventuell sparad historik
-    const History = JSON.parse(StorageData);
-    if(History === null) {
-        History = [];
+   let users = JSON.parse(localStorage.getItem("history"));
+    console.log(history);
+
+    if(users === null) {
+        users = [];
     }
 
-    if(History.length === 0) {
-        return
+    if(users.length === 0) {
+        console.log("Ingen sparad historik");
+        return;
     }
 
-    for(let i = 0; i < History.length; i++) {
-        const section = document.createChild("section");
+    for(let i = 0; i < users.length; i++) {
+        const section = document.createElement("section");
 
         console.log(section);
 
-        const p = document.createChild("pEl");
-        pEl.innerHTML = `Användare`
+        const p = document.createElement("p");
+        p.innerHTML = "Användare: " + users[i];
         
         console.log(p);
+
+        section.appendChild(p);
+        document.body.appendChild(section);
     }
 
     // Uppdatera history
@@ -232,9 +239,11 @@ function renderHistory() {
  */
 function clearForm() {
     // Återställ formulär och studentkort
-    
+    form.reset();
 
     // Rensa eventuella felmeddelanden
+    errors = [];
+    errorList.replaceChildren();
 }
 
 
