@@ -40,7 +40,6 @@ form.addEventListener ("submit", function(event) {
         font: fontSelect.value
     };
 
-    errorlist.innerHTML = "";
     /*
     console.log(fullname);
     console.log(email);
@@ -77,6 +76,7 @@ function validateForm(name, email, phone) {
     errors.innerHTML = "";
 
     // Variabel som har koll på eventuella fel
+    errors.length = 0;
     let validate = true;
 
     // Validera namn-input
@@ -87,12 +87,12 @@ function validateForm(name, email, phone) {
 
     // Validera email-input
     if(emailInput.value.trim() === 0) {
-        errors.push("Ange din E-postadress");
+        errors.push("Ange din e-postadress");
         validate = false;
     }
 
     if(!email.includes("@")) {
-        errors.push("Ange en giltig E-postadress");
+        errors.push("Ange en giltig e-postadress");
         validate = false;
     }
 
@@ -105,7 +105,7 @@ function validateForm(name, email, phone) {
     console.log(name);
     console.log(email);
     console.log(phone);
-    
+
     // Returnera resultatet (true eller false) av valideringen
     return validate;
 }
@@ -115,20 +115,18 @@ function validateForm(name, email, phone) {
 */
 function displayErrors() {
     // Rensa tidigare felmeddelanden
-    errorList.replaceChildren();
+    errorList.innerHTML = "";
 
     // Skriv ut aktuella felmeddelanden till DOM
-
     if(errors.length > 0) {
-            console.log(errors);
-
         for(let i = 0; i < errors.length; i++) {
             const liElement = document.createElement("li");
-            liElement.innerHTML = errors[i];
+            liElement.textContent = errors[i];
 
             errorList.appendChild(liElement);
         }
     }
+    console.log(errors);
 }
    
 /**
@@ -140,7 +138,7 @@ function createStudentCard(user) {
     previewEmail.textContent =  user.email;
     previewPhone.textContent = user.phone;
     
-    previewCard.style.font = user.font;
+    previewCard.style.fontFamily = font;
 
     // Skriva ut till elementet
     const output = document.querySelector("#preview");
@@ -262,6 +260,8 @@ function ClearForm() {
     fullnameInput.value ="";
     emailInput.value = "";
     phoneInput.value = "";
+
+    errorList.innerHTML = "";
 }
 
 // När användaren klickar på "Radera historik"
