@@ -8,10 +8,10 @@
 const form = document.querySelector("#studentform");
 const clearButton = document.querySelector("#clear");
 
-const fullnameInput = document.querySelector("#fullname");
-const emailInput = document.querySelector("#email");
-const phoneInput = document.querySelector("#phone");
-const fontSelect = document.querySelector("#font");
+const fullnameInputElement = document.querySelector("#fullname");
+const emailInputElement = document.querySelector("#email");
+const phoneInputElement = document.querySelector("#phone");
+const fontSelectElement = document.querySelector("#font");
 
 const previewFullname = document.querySelector("#previewfullname");
 const previewEmail = document.querySelector("#previewemail");
@@ -34,13 +34,13 @@ form.addEventListener ("submit", function(event) {
     event.preventDefault();
 
     const user = {
-        fullname: fullnameInput.value.trim(),
-        email: emailInput.value.trim(),
-        phone: phoneInput.value.trim(),
-        font: fontSelect.value
+        fullname: fullnameInputElement.value.trim(),
+        email: emailInputElement.value.trim(),
+        phone: phoneInputElement.value.trim(),
+        font: fontSelectElement.value
     };
 
-    if(!validateForm(user.fullname, user.email, user.phone)) {
+    if(!validateForm(fullnameInputElement, emailInputElement, phoneInputElement)) {
         displayErrors();
         return;
     } 
@@ -51,6 +51,7 @@ form.addEventListener ("submit", function(event) {
     // Historik
     saveHistory();
     renderHistory();
+    deleteHistory();
 
     // Rensa formulär
     ClearForm();
@@ -70,36 +71,43 @@ let history = [];
  * @returns {boolean}
  * 
  */
-function validateForm(fullname, email, phone) {
+function validateForm(fullnameInputElement, emailInputElement, phoneInputElement) {
     // Kontrollera formulärets obligatoriska fält
 
     // Visa eventuella felmeddelanden
+    errors.length = 0;
+    let validate = true;
+    
     // Tömmer felmeddelanden som redan skrivits ut
     errors = [];
     errors.innerHTML = "";
 
     // Variabel som har koll på eventuella fel
     // Validera namn-input
-    if(fullnameInput.value.trim() === "") {
+    if(fullnameInputElement.value.trim() === "") {
         errors.push("Du måste ange ditt fullständiga namn");
+        validate = false;
     }
 
     // Validera email-input
-    if(emailInput.value.trim() === "") {
+    if(emailInputElement.value.trim() === "") {
         errors.push("Du måste ange din e-postadress");
+        validate = false;
     }
 
     // Validera phone-input
-    if(phoneInput.value.trim() === "") {
+    if(phoneInputElement.value.trim() === "") {
         errors.push("Du måste ange ett telefonnummer");
+        validate = false;
     }
     
-    console.log(fullname);
-    console.log(email);
-    console.log(phone);
+    console.log(fullnameInputElement.value);
+    console.log(emailInputElement.value);
+    console.log(phoneInputElement.value);
+
+    errorList.innerHTML = "";
 
     // Returnera resultatet (true eller false) av valideringen
-    errorList.innerHTML = "";
     return errors.length === 0;
 }
 
@@ -129,10 +137,10 @@ function createStudentCard(user) {
     previewEmail.textContent =  user.email;
     previewPhone.textContent = user.phone;
         
-    preview.style.fontFamily = user.font;
+    preview.style.fontFamily = user.font; // Välj vilket typsnitt
     // Skriva ut till elementet
     const output = document.querySelector("#preview");
-    output.innerHTML =`${fullname} <br> ${email} <br> ${phone}`;
+    output.innerHTML =`${user.fullname} <br> ${user.email} <br> ${user.phone}`;
     
     // Uppdatera studentkortet
 
@@ -146,6 +154,9 @@ function createStudentCard(user) {
 
     // Spara och uppdatera historiken
     console.log(history);
+
+    saveHistory();
+    renderHistory();
 }
 
 
@@ -155,21 +166,6 @@ function createStudentCard(user) {
 function saveHistory() {
     // Spara historiken i localStorage
     localStorage.setItem("history", JSON.stringify(history));
-
-/*
-    const history = {
-        fullname: fullname,
-        email: email,
-        phone: phone,
-        font: font
-    };
-    console.log(history);
-
-    const History = [];
-    History.push(history);
-    const localStorageData = localStorage.getItem("History");
-    console.log(localStorageData);
-    */
 }
 
 /**
@@ -177,7 +173,7 @@ function saveHistory() {
  */
 function loadHistory() {
     // Hämta eventuell sparad historik
-    const savedHistory = localStorage(getitem("history"));
+    const savedHistory = localStorage.getItem("history");
 
     if(savedHistory !== null) {
         history = JSON.parse(savedHistory);
@@ -228,10 +224,11 @@ function renderHistory() {
         const section = document.createElement("section");
         const p = document.createElement("p");
 
-        p.textContent =
+        p.innerHTML =
         "Namn: " + history[i].fullname +
-        "E-post: " + history[i].email +
-        "Telefon: " + history[i].pgone;
+        "<br> Email: " + history[i].email +
+        "<br> Telefon: " + history[i].phone +
+        "<br> Font: " + history[i].font;
 
         section.style.fontFamily = history[i].font;
 
@@ -262,7 +259,7 @@ function clearForm() {
 function deleteHistory() {
     // Radera sparad historik
     history = [];
-    loacalStorage.removeitem("history");
+    loacalStorage.removeItem("history");
     renderHistory();
     // Uppdatera history och visningen på sidan
 }
@@ -276,9 +273,9 @@ function deleteHistory() {
 
 // När användaren klickar på "Rensa"
 function ClearForm() {
-    fullnameInput.value ="";
-    emailInput.value = "";
-    phoneInput.value = "";
+    fullnameInputElement.value ="";
+    emailInputElement.value = "";
+    phoneInputElement.value = "";
 
     errorList.innerHTML = "";
 }
