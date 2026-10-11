@@ -21,8 +21,10 @@ const errorList = document.querySelector("#errorlist");
 const historySection = document.querySelector("#history");
 const deleteHistoryButton = document.querySelector("#delete");
 
-form.addEventListener("submit", onSubmit)
-clearButton.addEventListener("click", ClearForm)
+const output = document.querySelector("#output");
+
+form.addEventListener("submit", onSubmit);
+clearButton.addEventListener("click", ClearForm);
 
 function onSubmit(event) {
     event.preventDefault();
@@ -30,9 +32,12 @@ function onSubmit(event) {
     const name = fullnameInput.value.trim();
     const email = emailInput.value.trim();
     const phone = phoneInput.value.trim();
+    const font = fontSelect.value.trim(); 
     
-    if(!validateForm(name, email, phone)) {
-        writeErrors();
+    console.log(font);
+
+    if(!validateForm(name, email, phone, font)) {
+        displayErrors();
     }
 
     displayErrors();
@@ -42,7 +47,6 @@ function onSubmit(event) {
 
 // Array som används för felmeddelanden
 let errors = [];
-let errorsList = [];
 
 // Array som innehåller sparade studentkort
 let history = [];
@@ -57,21 +61,22 @@ function validateForm(name, email, phone) {
 
     // Visa eventuella felmeddelanden
     // Tömmer felmeddelanden som redan skrivits ut
-    errors = [];
-    errors.innerHTML = "";
+    
 
     // Variabel som har koll på eventuella fel
     let validate = true;
 
     // Validera namn-input
-    if(name === "") {
+    if(fullnameInput.value.trim() === "") {
         errors.push("Ange ditt namn");
         validate = false;
     }
 
+    console.log(name);
+
     // Validera email-input
-    if(email.length === 0) {
-        errors.push("Ange din E-postadress")
+    if(emailInput.value.trim() === 0) {
+        errors.push("Ange din E-postadress");
         validate = false;
     }
 
@@ -81,10 +86,12 @@ function validateForm(name, email, phone) {
     }
 
     // Validera phone-input
-    if(phone === "") {
+    if(phoneInput.value === "") {
         errors.push("Ange ett telefonnummer");
         validate = false;
     }
+
+    console.log(phone);
     
     return validate;
 
@@ -96,16 +103,18 @@ function validateForm(name, email, phone) {
 */
 function displayErrors() {
     // Rensa tidigare felmeddelanden
+    errorList.innerHTML = "";
 
     // Skriv ut aktuella felmeddelanden till DOM
-    if(errorsList.length > 0) {
-            console.log(errorsList);
 
-        for(let i = 0; i < errorsList.length; i++) {
-            const liEl = document.createElement("li");
-            liEl.innerHTML = errorsList[i];
+    if(errors.length > 0) {
+            console.log(errors);
 
-            errorsList.appendChild(liEl);
+        for(let i = 0; i < errors.length; i++) {
+            const liElement = document.createElement("li");
+            liElement.innerHTML = errors[i];
+
+            errorList.appendChild(liElement);
         }
     }
 }
@@ -118,6 +127,9 @@ function createStudentCard() {
     let name = fullnameInput.value;
     let email = emailInput.value;
     let phone = phoneInput.value;
+    let font = fontSelect.value;
+
+    console.log(font);
 
     // Skriva ut till elementet
     const output = document.querySelector("#preview");
@@ -136,23 +148,25 @@ function createStudentCard() {
  */
 function saveHistory() {
     // Spara history i localStorage
-    const saveHistory = {
+    const History = {
         name: name,
         email: email,
-        phone: phone
+        phone: phone,
+        font: font
     }
 
-    const localStorageData = localStorage.getItem("SaveHistory");
+    const localStorageData = localStorage.getItem("Historys");
+    console.log(localStorageData);
 
-    const SaveHistory = JSON.parse(StorageData);
-    if(saveHistory === null) {
-        SaveHistory = [];
+    const Historys = JSON.parse(StorageData);
+    if(History === null) {
+        Historys = [];
     }
-    SaveHistory.push(saveHistory);
+    Historys.push(History);
 
-    const SaveHistoryJson = JSON.stringify(SaveHistory);
+    const HistorysJson = JSON.stringify(Historys);
 
-    localStorage.setItem("SaveHistory", SaveHistoryJson);
+    localStorage.setItem("Historys", HistorysJson);
 
 }
 
@@ -162,7 +176,25 @@ function saveHistory() {
  */
 function loadHistory() {
     // Hämta eventuell sparad historik
-   
+    const History = JSON.parse(StorageData);
+    if(History === null) {
+        History = [];
+    }
+
+    if(History.length === 0) {
+        return
+    }
+
+    for(let i = 0; i < History.length; i++) {
+        const section = document.createChild("section");
+
+        console.log(section);
+
+        const p = document.createChild("pEl");
+        pEl.innerHTML = `Användare`
+        
+        console.log(p);
+    }
 
     // Uppdatera history
 }
