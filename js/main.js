@@ -1,7 +1,7 @@
 "use strict";
 /*
  * Laboration 5 - Studentkortsgenerator
- * Namn: DITT NAMN
+ * Namn: Moa Jönsson
  */
 
 // Hämta element från DOM
@@ -25,7 +25,7 @@ const output = document.querySelector("#output");
 const user = document.querySelector("#user");
 const eventElement = document.querySelector("#event");
 const previewCard = document.querySelector("#previewCard");
-
+const errorlist = document.querySelector("#errorlist")
 
 clearButton.addEventListener("click", ClearForm);
 
@@ -39,6 +39,8 @@ form.addEventListener ("submit", function(event) {
         phone: phoneInput.value,
         font: fontSelect.value
     };
+
+    errorlist.innerHTML = "";
     /*
     console.log(fullname);
     console.log(email);
@@ -53,7 +55,6 @@ form.addEventListener ("submit", function(event) {
 
     createStudentCard(user);
     ClearForm();
-    
 });
 
 
@@ -73,7 +74,7 @@ function validateForm(name, email, phone) {
 
     // Visa eventuella felmeddelanden
     // Tömmer felmeddelanden som redan skrivits ut
-    
+    errors.innerHTML = "";
 
     // Variabel som har koll på eventuella fel
     let validate = true;
@@ -105,9 +106,8 @@ function validateForm(name, email, phone) {
     console.log(email);
     console.log(phone);
     
-    return validate;
-
     // Returnera resultatet (true eller false) av valideringen
+    return validate;
 }
 
 /**
@@ -115,7 +115,7 @@ function validateForm(name, email, phone) {
 */
 function displayErrors() {
     // Rensa tidigare felmeddelanden
-    errorList.innerHTML = "";
+    errorList.replaceChildren();
 
     // Skriv ut aktuella felmeddelanden till DOM
 
@@ -136,14 +136,20 @@ function displayErrors() {
  */
 function createStudentCard(user) {
     // Hämta information från formuläret
-    previewFullname.textContent = user.name;
+    previewFullname.textContent = user.fullname;
     previewEmail.textContent =  user.email;
     previewPhone.textContent = user.phone;
     
-    previewCard.style.fontFamily = user.font;
+    previewCard.style.font = user.font;
 
     // Skriva ut till elementet
     const output = document.querySelector("#preview");
+    /*
+    if(!output) {
+        console.error("Hittar inte ele,emter #preview i HTML");
+        return;
+    }
+    */
     output.innerHTML =`<strong>Namn:</strong> ${fullname} <br> <strong>E-postadress:</strong> ${email} <br> <strong>Telefon:</strong> ${phone}`;
     
     // Uppdatera studentkortet
