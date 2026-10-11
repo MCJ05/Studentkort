@@ -22,28 +22,40 @@ const historySection = document.querySelector("#history");
 const deleteHistoryButton = document.querySelector("#delete");
 
 const output = document.querySelector("#output");
+const user = document.querySelector("#user");
+const eventElement = document.querySelector("#event");
+const previewCard = document.querySelector("#previewCard");
 
-form.addEventListener("submit", onSubmit);
+
 clearButton.addEventListener("click", ClearForm);
 
-function onSubmit(event) {
+console.log(user);
+form.addEventListener ("submit", function(event) {
     event.preventDefault();
-    
-    const name = fullnameInput.value.trim();
-    const email = emailInput.value.trim();
-    const phone = phoneInput.value.trim();
-    const font = fontSelect.value.trim(); 
-    
+    //
+    const user = {
+        fullname: fullnameInput.value.trim(),
+        email: emailInput.value.trim(),
+        phone: phoneInput.value,
+        font: fontSelect.value
+    };
+    /*
+    console.log(fullname);
+    console.log(email);
+    console.log(phone);
     console.log(font);
+    */
 
-    if(!validateForm(name, email, phone, font)) {
+    if(!validateForm(user.fullname, user.email, user.phone)) {
         displayErrors();
+        return;
     }
 
-    displayErrors();
-    createStudentCard();
+    createStudentCard(user);
     ClearForm();
-}
+    
+});
+
 
 // Array som används för felmeddelanden
 let errors = [];
@@ -72,8 +84,6 @@ function validateForm(name, email, phone) {
         validate = false;
     }
 
-    console.log(name);
-
     // Validera email-input
     if(emailInput.value.trim() === 0) {
         errors.push("Ange din E-postadress");
@@ -90,7 +100,9 @@ function validateForm(name, email, phone) {
         errors.push("Ange ett telefonnummer");
         validate = false;
     }
-
+    
+    console.log(name);
+    console.log(email);
     console.log(phone);
     
     return validate;
@@ -122,18 +134,17 @@ function displayErrors() {
 /**
  * Skapar ett studentkort och visar det på sidan.
  */
-function createStudentCard() {
+function createStudentCard(user) {
     // Hämta information från formuläret
-    let name = fullnameInput.value;
-    let email = emailInput.value;
-    let phone = phoneInput.value;
-    let font = fontSelect.value;
-
-    console.log(font);
+    previewFullname.textContent = user.name;
+    previewEmail.textContent =  user.email;
+    previewPhone.textContent = user.phone;
+    
+    previewCard.style.fontFamily = user.font;
 
     // Skriva ut till elementet
     const output = document.querySelector("#preview");
-    output.innerHTML =`<strong>Namn:</strong> ${name} <br> <strong>E-postadress:</strong> ${email} <br> <strong>Telefon:</strong> ${phone}`;
+    output.innerHTML =`<strong>Namn:</strong> ${fullname} <br> <strong>E-postadress:</strong> ${email} <br> <strong>Telefon:</strong> ${phone}`;
     
     // Uppdatera studentkortet
 
@@ -149,11 +160,13 @@ function createStudentCard() {
 function saveHistory() {
     // Spara history i localStorage
     const History = {
-        name: name,
+        name: fullname,
         email: email,
         phone: phone,
         font: font
-    }
+    };
+
+    conaole.log(History);
 
     const localStorageData = localStorage.getItem("Historys");
     console.log(localStorageData);
@@ -164,7 +177,7 @@ function saveHistory() {
     }
     Historys.push(History);
 
-    const HistorysJson = JSON.stringify(Historys);
+    const HistorysJson = JSON.stringify(History);
 
     localStorage.setItem("Historys", HistorysJson);
 
