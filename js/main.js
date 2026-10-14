@@ -8,10 +8,10 @@
 const form = document.querySelector("#studentform");
 const clearButton = document.querySelector("#clear");
 
-const fullnameInputElement = document.querySelector("#fullname");
-const emailInputElement = document.querySelector("#email");
-const phoneInputElement = document.querySelector("#phone");
-const fontSelectElement = document.querySelector("#font");
+const fullnameInput = document.querySelector("#fullname");
+const emailInput = document.querySelector("#email");
+const phoneInput = document.querySelector("#phone");
+const fontSelect = document.querySelector("#font");
 
 const previewFullname = document.querySelector("#previewfullname");
 const previewEmail = document.querySelector("#previewemail");
@@ -21,26 +21,22 @@ const errorList = document.querySelector("#errorlist");
 const historySection = document.querySelector("#history");
 const deleteHistoryButton = document.querySelector("#delete");
 
-const output = document.querySelector("#output");
-const user = document.querySelector("#user");
-const eventElement = document.querySelector("#event");
-const previewCard = document.querySelector("#previewCard");
 
 clearButton.addEventListener("click", ClearForm);
-deleteHistoryButton.addEventListener("click", deleteHistoryButton);
+deleteHistoryButton.addEventListener("click", deleteHistory);
 
-console.log(user);
 form.addEventListener ("submit", function(event) {
     event.preventDefault();
 
     const user = {
-        fullname: fullnameInputElement.value.trim(),
-        email: emailInputElement.value.trim(),
-        phone: phoneInputElement.value.trim(),
-        font: fontSelectElement.value
+        fullname: fullnameInput.value.trim(),
+        email: emailInput.value.trim(),
+        phone: phoneInput.value.trim(),
+        font: fontSelect.value
     };
+    console.log(user);
 
-    if(!validateForm(fullnameInputElement, emailInputElement, phoneInputElement)) {
+    if(!validateForm(user.fullname, user.email, user.phone)) {
         displayErrors();
         return;
     } 
@@ -51,10 +47,8 @@ form.addEventListener ("submit", function(event) {
     // Historik
     saveHistory();
     renderHistory();
-    deleteHistory();
 
     // Rensa formulär
-    ClearForm();
     clearForm();
     
 });
@@ -71,44 +65,45 @@ let history = [];
  * @returns {boolean}
  * 
  */
-function validateForm(fullnameInputElement, emailInputElement, phoneInputElement) {
+function validateForm(fullname, email, phone) {
     // Kontrollera formulärets obligatoriska fält
 
     // Visa eventuella felmeddelanden
-    errors.length = 0;
+    errorList.length = 0;
     let validate = true;
+    console.log(validate);
     
     // Tömmer felmeddelanden som redan skrivits ut
     errors = [];
-    errors.innerHTML = "";
+    errorList.innerHTML = "";
 
     // Variabel som har koll på eventuella fel
     // Validera namn-input
-    if(fullnameInputElement.value.trim() === "") {
+    if(fullname === "") {
         errors.push("Du måste ange ditt fullständiga namn");
         validate = false;
     }
 
     // Validera email-input
-    if(emailInputElement.value.trim() === "") {
+    if(email === "") {
         errors.push("Du måste ange din e-postadress");
         validate = false;
     }
 
     // Validera phone-input
-    if(phoneInputElement.value.trim() === "") {
+    if(phone === "") {
         errors.push("Du måste ange ett telefonnummer");
         validate = false;
     }
     
-    console.log(fullnameInputElement.value);
-    console.log(emailInputElement.value);
-    console.log(phoneInputElement.value);
+    console.log(fullname);
+    console.log(email);
+    console.log(phone);
 
-    errorList.innerHTML = "";
+    errors.innerHTML = "";
 
     // Returnera resultatet (true eller false) av valideringen
-    return errors.length === 0;
+    return validate;
 }
 
 /**
@@ -121,9 +116,7 @@ function displayErrors() {
     // Skriv ut aktuella felmeddelanden till DOM
     for(let i = 0; i < errors.length; i++) {
         const liElement = document.createElement("li");
-        
         liElement.textContent = errors[i];
-
         errorList.appendChild(liElement);
     }
 }
@@ -133,15 +126,17 @@ function displayErrors() {
  */
 function createStudentCard(user) {
     // Hämta information från formuläret
-    previewFullname.textContent = user.fullname;
-    previewEmail.textContent =  user.email;
-    previewPhone.textContent = user.phone;
-        
-    preview.style.fontFamily = user.font; // Välj vilket typsnitt
     // Skriva ut till elementet
-    const output = document.querySelector("#preview");
-    output.innerHTML =`${user.fullname} <br> ${user.email} <br> ${user.phone}`;
+    previewFullname.textContent = `Namn: ${fullname}`;
+    previewEmail.textContent = `E-post: ${email}`;
+    previewPhone.textContent = `Telefon: ${phone}`;
+         
+    // Välj vilket typsnitt
+    previewFullname.style.fontFamily = user.font;
+    previewEmail.style.fontFamily = user.font;
+    previewPhone.style.fontFamily = user.font;
     
+    console.log(user);
     // Uppdatera studentkortet
 
     // Lägg till studentkortet i historiken
@@ -154,9 +149,6 @@ function createStudentCard(user) {
 
     // Spara och uppdatera historiken
     console.log(history);
-
-    saveHistory();
-    renderHistory();
 }
 
 
@@ -182,33 +174,7 @@ function loadHistory() {
     }
 
     renderHistory();
-    /*
-   let users = JSON.parse(localStorage.getItem("history"));
-    console.log(history);
-
-    if(users === null) {
-        users = [];
-    }
-
-    if(users.length === 0) {
-        console.log("Ingen sparad historik");
-        return;
-    }
-
-    for(let i = 0; i < users.length; i++) {
-        const section = document.createElement("section");
-
-        console.log(section);
-
-        const p = document.createElement("p");
-        p.innerHTML = "Användare: " + users[i];
-        
-        console.log(p);
-
-        section.appendChild(p);
-        document.body.appendChild(section);
-    }
-    */
+   
     // Uppdatera history
 }
 
@@ -259,7 +225,7 @@ function clearForm() {
 function deleteHistory() {
     // Radera sparad historik
     history = [];
-    loacalStorage.removeItem("history");
+    localStorage.removeItem("history");
     renderHistory();
     // Uppdatera history och visningen på sidan
 }
@@ -273,9 +239,9 @@ function deleteHistory() {
 
 // När användaren klickar på "Rensa"
 function ClearForm() {
-    fullnameInputElement.value ="";
-    emailInputElement.value = "";
-    phoneInputElement.value = "";
+    fullnameInput.value ="";
+    emailInput.value = "";
+    phoneInput.value = "";
 
     errorList.innerHTML = "";
 }
