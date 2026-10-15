@@ -22,7 +22,7 @@ const historySection = document.querySelector("#history");
 const deleteHistoryButton = document.querySelector("#delete");
 
 
-clearButton.addEventListener("click", ClearForm);
+clearButton.addEventListener("click", clearForm);
 deleteHistoryButton.addEventListener("click", deleteHistory);
 
 form.addEventListener ("submit", function(event) {
@@ -48,6 +48,7 @@ form.addEventListener ("submit", function(event) {
     saveHistory();
     renderHistory();
 
+
     // Rensa formulär
     clearForm();
     
@@ -67,10 +68,8 @@ let history = [];
  */
 function validateForm(fullname, email, phone) {
     // Kontrollera formulärets obligatoriska fält
-
-    // Visa eventuella felmeddelanden
-    errorList.length = 0;
     let validate = true;
+    // Visa eventuella felmeddelanden
     console.log(validate);
     
     // Tömmer felmeddelanden som redan skrivits ut
@@ -100,8 +99,6 @@ function validateForm(fullname, email, phone) {
     console.log(email);
     console.log(phone);
 
-    errors.innerHTML = "";
-
     // Returnera resultatet (true eller false) av valideringen
     return validate;
 }
@@ -127,9 +124,9 @@ function displayErrors() {
 function createStudentCard(user) {
     // Hämta information från formuläret
     // Skriva ut till elementet
-    previewFullname.textContent = `Namn: ${fullname}`;
-    previewEmail.textContent = `E-post: ${email}`;
-    previewPhone.textContent = `Telefon: ${phone}`;
+    previewFullname.textContent = `Namn: ${user.fullname}`;
+    previewEmail.textContent = `E-post: ${user.email}`;
+    previewPhone.textContent = `Telefon: ${user.phone}`;
          
     // Välj vilket typsnitt
     previewFullname.style.fontFamily = user.font;
@@ -158,6 +155,7 @@ function createStudentCard(user) {
 function saveHistory() {
     // Spara historiken i localStorage
     localStorage.setItem("history", JSON.stringify(history));
+    console.log("Sparad hisrorik:", localStorage.getitem("history"));
 }
 
 /**
@@ -166,6 +164,7 @@ function saveHistory() {
 function loadHistory() {
     // Hämta eventuell sparad historik
     const savedHistory = localStorage.getItem("history");
+    console.log("Hämtad historik:", savedHistory);
 
     if(savedHistory !== null) {
         history = JSON.parse(savedHistory);
@@ -202,7 +201,7 @@ function renderHistory() {
         historySection.appendChild(section);
     }
     // Skriv ut innehållet i history till DOM
-    
+    console.log(renderHistory);
 }
 
 
@@ -212,7 +211,11 @@ function renderHistory() {
 function clearForm() {
     // Återställ formulär och studentkort
     form.reset();
-
+    /*
+    previewFullname.textContent = "";
+    previewEmail.textContent = "";
+    previewPhone.textContent = "";
+    */
     // Rensa eventuella felmeddelanden
     errorList.innerHTML = "";
     errors = [];
@@ -251,3 +254,4 @@ function ClearForm() {
 
 // När sidan laddas:
 // - läs in och visa eventuell tidigare historik
+loadHistory();
