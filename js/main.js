@@ -155,7 +155,6 @@ function createStudentCard(user) {
 function saveHistory() {
     // Spara historiken i localStorage
     localStorage.setItem("history", JSON.stringify(history));
-    console.log("Sparad hisrorik:", localStorage.getitem("history"));
 }
 
 /**
